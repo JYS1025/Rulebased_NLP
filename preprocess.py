@@ -55,3 +55,14 @@ def words_lemmatizer(pos_tagged_words):
         else:
             lemmatized_words.append(word)
     return lemmatized_words
+
+def idx_encoder(tokens, word_to_idx):
+    encoded_idx = []
+    
+    for token in tokens:
+        idx = word_to_idx[token]
+        encoded_idx.append(idx)
+        
+    return encoded_idx
+
+

@@ -10,13 +10,13 @@ from preprocess import clean_by_stopwords
 from preprocess import stemming_by_porter
 from preprocess import combine
 from preprocess import pos_tagger
-from preprocess import words_lemmatizer
+from preprocess import words_lemmatizer, idx_encoder
 
 # NLTK 리소스 다운로드
-nltk.download('punkt')
-nltk.download('stopwords')
-nltk.download('averaged_perceptron_tagger')
-nltk.download('wordnet')
+nltk.download('punkt',quiet=True)
+nltk.download('stopwords',quiet=True)
+nltk.download('averaged_perceptron_tagger',quiet=True)
+nltk.download('wordnet',quiet=True)
 
 # 데이터프레임 읽기
 df = pd.read_csv('imdb.tsv', delimiter='\\t', engine='python')
@@ -48,5 +48,15 @@ df['stemmed_tokens'] = df['cleaned_tokens'].apply(stemming_by_porter)
 df['combined_corpus'] = df['stemmed_tokens'].apply(combine)
 
 # Interger Encoding
+tokens = sum(df['cleaned_tokens'], [])
+vocab = Counter(tokens)
+vocab = vocab.most_common()
+
+#indexing
+word2idx = {}
+for i, (word, frequency) in enumerate(vocab):
+    word2idx[word] = i+1
+
+df['integer_encoded'] = df['cleaned_tokens'].apply(lambda x: idx_encoder(x, word2idx))
 
 
